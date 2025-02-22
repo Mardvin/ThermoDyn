@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Определение количества теплоты на отопление</h1>
+
+<h3 class="text-center">Характеристики тепловых сетей</h3>
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Наружный диаметр трубопровода, мм</th>
+            <th>Длина участка (км)</th>
+            <th>Теплоизоляционный материал</th>
+            <th>Тип прокладки</th>
+            <th>Год ввода в эксплуатацию</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for segment in segments %}
+        <tr>
+            <td>{{ segment.diameter }}</td>
+            <td>{{ segment.length|floatformat:3 }}</td>
+            <td>{{ segment.insulation_material }}</td>
+            <td>{{ segment.laying_type }}</td>
+            <td>{{ segment.commissioning_year }}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="dropbtn">⋮</button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'edit_pipeline' segment.id %}">Редактировать</a>
+                        <a href="#"
+                           class="delete-btn"
+                           data-segment-id="{{ segment.id }}"
+                           data-delete-url="{% url 'delete_pipeline' 0 %}"
+                           data-csrf-token="{{ csrf_token }}">
+                            Удалить
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Нет данных</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Кнопка для перехода на страницу добавления -->
+<a href="{% url 'create_pipeline_segment' %}" class="btn btn-primary">Добавить</a>
+
+<div class="summary-block">
+    <strong>Ёмкость трубопровода системы: {{ network_volume }} м3</strong>
+</div>
+
+<h4>Продолжительность функционирования теплоснабжения в отопительный, летний период и в течение года:</h4>
+
+<div class="summary-block">
+    <strong>𝑛г = 𝑛от + 𝑛л = 5160 + 0 = 5160 ч,</strong>
+</div>
+
+<h4>Cреднегодовая норма потерь теплоносителя c утечкой:</h4>
+
+<div class="summary-block">
+    <strong> {{ volume_leakage }} м3</strong>
+</div>
+
+<h4>Средняя температура в прямом и обратном трубопроводе</h4>
+
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th rowspan="2">Наименование</th>
+            <th rowspan="2">Тип трубопровода</th>
+            <th colspan="12">Температура теплоносителя (°C)</th>
+        </tr>
+        <tr>
+            <th>Январь</th>
+            <th>Февраль</th>
+            <th>Март</th>
+            <th>Апрель</th>
+            <th>Май</th>
+            <th>Июнь</th>
+            <th>Июль</th>
+            <th>Август</th>
+            <th>Сентябрь</th>
+            <th>Октябрь</th>
+            <th>Ноябрь</th>
+            <th>Декабрь</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in temperature_graph %}
+        <tr>
+            <td>{{ record.name }}</td>
+            <td>{{ record.get_pipe_type_display }}</td>
+            <td>{{ record.january }}</td>
+            <td>{{ record.february }}</td>
+            <td>{{ record.march }}</td>
+            <td>{{ record.april }}</td>
+            <td>{{ record.may }}</td>
+            <td>{{ record.june }}</td>
+            <td>{{ record.july }}</td>
+            <td>{{ record.august }}</td>
+            <td>{{ record.september }}</td>
+            <td>{{ record.october }}</td>
+            <td>{{ record.november }}</td>
+            <td>{{ record.december }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Нет данных</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h4>Средняя температура в прямом и обратном трубопроводе</h4>
+
+<div class="summary-block">
+    <strong>Прямой: {{temperature_supply_return.supply}} °C  Обратный: {{temperature_supply_return.return}}</strong>
+</div>
+
+<h4>среднечасовая годовая норма потерь теплоносителя, обусловленных утечкой</h4>
+
+<div class="summary-block">
+    <strong>{{hourly_annual_coolant_leakage}} м3/ч</strong>
+</div>
+
+<h4>Дополнительные параметры системы</h4>
+<div class="summary-block bg-light p-3 rounded shadow-sm">
+    <p><strong>Температура холодной воды (\( t_{х} \)):</strong></p>
+    <ul class="list-unstyled">
+        <li>В отопительный период: <strong>+5 °C</strong></li>
+        <li>В летнее время: <strong>+15 °C</strong></li>
+    </ul>
+    <p><strong>Доля массового расхода теплоносителя, теряемого подающим трубопроводом (\( b \)):</strong> <strong>0,75</strong></p>
+</div>
+
+
+<script src="{% static 'heat_losses/js/dropdown.js' %}"></script>
+
+{% endblock %}

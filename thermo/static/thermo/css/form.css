@@ -1,0 +1,28 @@
+form {
+    width: 30%; /* Уменьшенная ширина */
+    margin: 20px 0 20px 20px; /* Выровнять влево */
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-label {
+    width: 120px; /* Уменьшенная ширина */
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+input, select {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}

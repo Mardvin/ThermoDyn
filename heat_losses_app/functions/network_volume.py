@@ -1,0 +1,70 @@
+from heat_losses_app.models import PipeStandard, PipelineSegment
+
+
+def get_specific_volume(diameter, pipes_standard):
+    """
+    Возвращает удельный объем для заданного диаметра трубы.
+    Если точного совпадения нет, выполняет линейную интерполяцию или экстраполяцию.
+    """
+    pipes = list(pipes_standard)  # Приводим к списку, если это QuerySet
+    pipes.sort(key=lambda x: x.diameter)  # Сортируем по диаметру
+
+    if not pipes:
+        return None  # Если в БД нет данных, вернуть None
+
+    if len(pipes) == 1:
+        return pipes[0].specific_volume  # Если в БД только одна труба, берем ее значение
+
+    # Проверяем, есть ли точное совпадение
+    for pipe in pipes:
+        if pipe.diameter == diameter:
+            return pipe.specific_volume
+
+    # Если диаметр меньше минимального, выполняем экстраполяцию
+    if diameter < pipes[0].diameter and len(pipes) > 1:
+        d1, v1 = pipes[0].diameter, pipes[0].specific_volume
+        d2, v2 = pipes[1].diameter, pipes[1].specific_volume
+    # Если диаметр больше максимального, выполняем экстраполяцию
+    elif diameter > pipes[-1].diameter and len(pipes) > 1:
+        d1, v1 = pipes[-2].diameter, pipes[-2].specific_volume
+        d2, v2 = pipes[-1].diameter, pipes[-1].specific_volume
+    else:
+        # Ищем ближайшие две точки для интерполяции
+        for i in range(len(pipes) - 1):
+            if pipes[i].diameter < diameter < pipes[i + 1].diameter:
+                d1, v1 = pipes[i].diameter, pipes[i].specific_volume
+                d2, v2 = pipes[i + 1].diameter, pipes[i + 1].specific_volume
+                break
+        else:
+            return None  # Если не нашли подходящие точки
+
+    # Линейная интерполяция/экстраполяция
+    specific_volume = v1 + (diameter - d1) * ((v2 - v1) / (d2 - d1))
+    return round(specific_volume, 3)
+
+
+def total_volume_network():
+    """
+    Расчет емкости трубопровода системы теплоснабжения
+    """
+    total_volume = 0
+    pipes_standard = list(PipeStandard.objects.all())  # Приводим к списку
+    pipelines_diam_len = list(PipelineSegment.objects.values("diameter", "length"))
+
+    for pipe in pipelines_diam_len:
+        pipe_volume = get_specific_volume(pipe["diameter"], pipes_standard)
+        if pipe_volume is not None:  # Проверяем, что значение не None
+            total_volume += pipe_volume * 2 * pipe["length"]
+
+    return round(total_volume, 3)
+
+
+def hourly_annual_coolant_leakage_norm():
+    """
+    Cреднечасовая годовая норма потерь теплоносителя, обусловленных утечкой
+
+    """
+    a = 0.25
+
+    result = a * total_volume_network() / 100
+    return round(result, 3)

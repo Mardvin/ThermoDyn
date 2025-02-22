@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Определение количества теплоты на отопление</h1>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Street Name</th>
+            <th>Numbers</th>
+            <th>Construction Volume</th>
+            <th>Indoor Air Temperature</th>
+            <th>Construction Year</th>
+            <th>Heating Characteristic</th>
+            <th>Heat energy</th>
+            <th>Actions</th>  <!-- Новая колонка -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td>{{ post.street_name }}</td>
+            <td>{{ post.numbers }}</td>
+            <td>{{ post.construction_volume }}</td>
+            <td>{{ post.indoor_air_temperature }}</td>
+            <td>{{ post.construction_year }}</td>
+            <td>{{ post.heating_characteristic }}</td>
+            <td>{{ post.heat_energy }}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="dropbtn">⋮</button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'edit_home' post.id %}">Редактировать</a>
+                        <a href="#"
+                           class="delete-btn"
+                           data-post-id="{{ post.id }}"
+                           data-delete-url="{% url 'delete_home' 0 %}"
+                           data-csrf-token="{{ csrf_token }}">
+                            Удалить
+                        </a>
+
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="summary-block">
+    <strong>Суммарное количество теплоты: {{ total_heat_energy }} Гкал</strong>
+</div>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="form-error">{{ form.non_field_errors }}</div>
+    {% for f in form %}
+        <div class="form-group">
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
+        </div>
+    <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+    <button type="submit">Добавить</button>
+</form>
+
+<script src="{% static 'thermo/js/dropdown.js' %}"></script>
+{% endblock %}
