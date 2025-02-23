@@ -13,3 +13,10 @@ db.sqlite3
 *.swp
 
 staticfiles
+
+# Игнорируем файлы конфигурации IDE
+.vscode/
+*.iml
+.idea/
+.idea
+*.sublime-workspace
