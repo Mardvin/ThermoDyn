@@ -4,8 +4,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from heat_losses_app.forms import AddPipeLineSegment
 from heat_losses_app.functions.heat_loss_leakage import VolumeLossLeakage
-from heat_losses_app.functions.network_volume import total_volume_network, hourly_annual_coolant_leakage_norm
-from heat_losses_app.functions.temperature_analysis import TemperatureCalculator
+from heat_losses_app.functions.main_heat_losses import MainHeatLosses
+from heat_losses_app.functions.temperature_analysis import TemperatureCalculator, calculate_utilized_heat
 from heat_losses_app.models import PipelineSegment, TemperatureGraph
 
 # Create your views here.
@@ -17,12 +17,16 @@ menu = [
 ]
 
 class PipelineSegmentTable(ListView):
+    hourly_annual_coolant = TemperatureCalculator().result()
+    hourly_annual_coolant_supply = hourly_annual_coolant['supply']
+    hourly_annual_coolant_return = hourly_annual_coolant['return']
+
     model = PipelineSegment
     template_name = 'heat_losses_app/heat_losses.html'
     context_object_name = 'segments'
 
     def get_context_data(self, **kwargs):
-        total_volume = total_volume_network()
+        total_volume = MainHeatLosses.network_volume.total_volume_network
 
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
@@ -32,7 +36,7 @@ class PipelineSegmentTable(ListView):
         context['segments'] = PipelineSegment.objects.all()
         context['temperature_graph'] = TemperatureGraph.objects.all()
         context['temperature_supply_return'] = TemperatureCalculator().result()
-        context['hourly_annual_coolant_leakage'] = hourly_annual_coolant_leakage_norm()
+        context['hourly_annual_coolant_leakage'] = MainHeatLosses.network_volume.hourly_annual_coolant_leakage_norm
         return context
 
 

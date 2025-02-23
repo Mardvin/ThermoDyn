@@ -130,14 +130,21 @@
 
 <h4>Дополнительные параметры системы</h4>
 <div class="summary-block bg-light p-3 rounded shadow-sm">
-    <p><strong>Температура холодной воды (\( t_{х} \)):</strong></p>
     <ul class="list-unstyled">
+        <li>Pгод плотность теплоносителя при среднем значении температуры: <strong>1000 кг/м3</strong></li>
+        <li>Температуры подпитки холодной воды: </li>
         <li>В отопительный период: <strong>+5 °C</strong></li>
         <li>В летнее время: <strong>+15 °C</strong></li>
+        <li>Удельная теплоемкость теплоносителя<strong>1 ккал/кг*°C</strong></li>
+        <li>Доля массового расхода теплоносителя<strong>0,75</strong></li>
     </ul>
-    <p><strong>Доля массового расхода теплоносителя, теряемого подающим трубопроводом (\( b \)):</strong> <strong>0,75</strong></p>
 </div>
 
+<h4>Расчет нормативного значения годовых технологических тепловых потерь с утечкой:</h4>
+
+<div class="summary-block">
+    <strong>{{calculate_utilized_heat}} м3/ч</strong>
+</div>
 
 <script src="{% static 'heat_losses/js/dropdown.js' %}"></script>
 

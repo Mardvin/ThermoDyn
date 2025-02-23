@@ -1,14 +1,5 @@
-from enum import Enum
-from typing import Dict
-
-from pydantic import BaseModel
-
-
 # from django.db.models import Avg
 from heat_losses_app.models import TemperatureGraph
-
-
-
 
 MONTH_DAYS = {
     "january": 31,
@@ -78,3 +69,33 @@ class TemperatureCalculator:
 
     def result(self):
         return {'supply': self.calculate_yearly_temperature('supply'), 'return': self.calculate_yearly_temperature('return')}
+
+
+def calculate_utilized_heat(temp_stage1, temp_stage2,):
+    """
+    Вычисляет количество утилизируемого тепла Q_у.н. по заданной формуле.
+
+    :param mass_per_year: среднечасовая годовая норма потерь теплоносителя, обусловленных утечкой (кг)
+    :param density: Плотность теплоносителя (кг/м³)
+    :param specific_heat: Удельная теплоёмкость (Дж/(кг·°C))
+    :param temp_distribution_coeff: Коэффициент распределения температур (безразмерный)
+    :param temp_stage1: Температура первой стадии (°C)
+    :param temp_stage2: Температура второй стадии (°C)
+    :param ambient_temp: Температура окружающей среды (°C)
+    :param heat_utilization_coeff: отопительный период ч
+    :return: Утилизируемое тепло (Гкал)
+    """
+    mass_per_year = 0.15  # Например, 1000 кг
+    density = 1000  # Плотность воды 1000 кг/м³
+    specific_heat = 1  # удельная теплоемкость теплоносителя (ккал/(кг·°C))
+    temp_distribution_coeff = 0.75  # Например, 0.5
+    ambient_temp = 5  # Температура холодной воды подпитки (°C)
+    heat_utilization_coeff = 5160  # Отопительный период
+
+    utilized_heat = (
+        mass_per_year * density * specific_heat *
+        (temp_distribution_coeff * temp_stage1 + (1 - temp_distribution_coeff) * temp_stage2 - ambient_temp) *
+        heat_utilization_coeff
+    ) * 10**-6
+    return round(utilized_heat, 2)
+
