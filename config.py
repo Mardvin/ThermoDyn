@@ -2,11 +2,8 @@ import configparser
 from pydantic import BaseModel, Field, ValidationError
 
 class GeneralConfig(BaseModel):
-    mass_per_year: float = Field(gt=0, description="Масса утилизируемого теплоносителя за год (кг)")
-    density: float = Field(gt=0, description="Плотность теплоносителя (кг/м³)")
-    specific_heat: float = Field(gt=0, description="Удельная теплоёмкость (Дж/(кг·°C))")
-    temp_distribution_coeff: float = Field(ge=0, le=1, description="Коэффициент распределения (0-1)")
-    heat_utilization_coeff: float = Field(ge=0, le=1, description="Коэффициент использования тепла (0-1)")
+    heating_hours: int = Field(default=5160, description="Количество часов отопительного периода")
+    heating_summer_hours: int = Field(default=0, description="Количество часов летнего периода")
 
 class TemperatureConfig(BaseModel):
     temp_stage1: float = Field(description="Температура первой стадии (°C)")
@@ -28,11 +25,8 @@ def load_config(config_path: str = "constant.conf") -> Config:
 
     try:
         general = GeneralConfig(
-            mass_per_year=float(config["general"]["mass_per_year"]),
-            density=float(config["general"]["density"]),
-            specific_heat=float(config["general"]["specific_heat"]),
-            temp_distribution_coeff=float(config["general"]["temp_distribution_coeff"]),
-            heat_utilization_coeff=float(config["general"]["heat_utilization_coeff"]),
+            heating_hours=int(config["general"]["heating_hours"]),
+            heating_summer_hours=int(config["general"]["heating_summer_hours"]),
         )
 
         temperature = TemperatureConfig(

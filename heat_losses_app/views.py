@@ -3,8 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from heat_losses_app.forms import AddPipeLineSegment
-from heat_losses_app.functions.heat_loss_leakage import VolumeLossLeakage
-from heat_losses_app.functions.main_heat_losses import MainHeatLosses
+from heat_losses_app.functions.main_heat_losses import MainHeatLosses, DataRepository
 from heat_losses_app.functions.temperature_analysis import TemperatureCalculator, calculate_utilized_heat
 from heat_losses_app.models import PipelineSegment, TemperatureGraph
 
@@ -32,8 +31,8 @@ class PipelineSegmentTable(ListView):
         context['title'] = 'Главная страница'
         context['menu'] = menu
         context['network_volume'] = total_volume
-        context['volume_leakage'] = float(VolumeLossLeakage(pipeline_capacity=total_volume))
-        context['segments'] = PipelineSegment.objects.all()
+        context['network_leakage'] = MainHeatLosses.network_leakage.leakage_loss
+        context['segments'] = DataRepository.get_all_segments()
         context['temperature_graph'] = TemperatureGraph.objects.all()
         context['temperature_supply_return'] = TemperatureCalculator().result()
         context['hourly_annual_coolant_leakage'] = MainHeatLosses.network_volume.hourly_annual_coolant_leakage_norm
