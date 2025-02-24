@@ -1,25 +1,22 @@
-class VolumeLossLeakage:
-    def __init__(self,
-                 pipeline_capacity: float,
-                 leakage_rate: float = 0.25,
-                 heating_hours: int = 5160,
-                 summer_hours: int = 0
-                 ):
+from config import Config
+
+
+class LeakageNetwork:
+    def __init__(self, volume_pipelines: float, conf: Config):
         """
         Класс для расчета годовых потерь теплоносителя утечкой.
-
-        :param pipeline_capacity: Объем теплоносителя в трубопроводе в отопительный период (м³)
-        :param leakage_rate: Норма утечки теплоносителя (в %, по умолчанию 0.25%)
+        :param volume_pipelines: Объем теплоносителя в трубопроводе в отопительный период (м³)
         :param heating_hours: Количество часов отопительного периода (по умолчанию 5160 часов = 215 дней)
         :param summer_hours: Количество часов летнего периода (по умолчанию 0)
         """
-        self.pipeline_capacity = pipeline_capacity  # Объем теплоносителя в трубопроводе в отопительный период
-        self.leakage_rate = leakage_rate  # Норма утечки теплоносителя в процентах
-        self.heating_hours = heating_hours  # Часы отопительного периода
-        self.summer_hours = summer_hours  # Часы летнего периода
-        self.total_hours = self.heating_hours + self.summer_hours  # Общее количество часов работы теплоснабжения за год
+        self.__pipeline_capacity = volume_pipelines  # Объем теплоносителя в трубопроводе в отопительный период
+        self.__norm_leakage_a = conf.volume_network.norm_leakage_a
+        self.__heating_hours = conf.general.heating_hours
+        self.__summer_hours = conf.general.heating_summer_hours
+        self.__total_hours = self.__heating_hours + self.__summer_hours  # Общее количество часов работы
+        # теплоснабжения за год
 
-        # Рассчитываем потери при создании объекта
+        # годовые потери теплоносителя из-за утечек
         self.leakage_loss = self.__calculate_annual_leakage_loss()
 
     def __calculate_average_annual_capacity(self) -> float:
@@ -28,7 +25,7 @@ class VolumeLossLeakage:
 
         :return: Среднегодовая емкость (м³)
         """
-        return round(self.pipeline_capacity * self.heating_hours / self.total_hours, 3)
+        return round(self.__pipeline_capacity * self.__heating_hours / self.__total_hours, 3)
 
     def __calculate_annual_leakage_loss(self) -> float:
         """
@@ -37,11 +34,5 @@ class VolumeLossLeakage:
         :return: Годовые потери теплоносителя (м³)
         """
         average_annual_capacity = self.__calculate_average_annual_capacity()
-        annual_leakage_loss = (self.leakage_rate / 100) * average_annual_capacity * self.total_hours
+        annual_leakage_loss = (self.__norm_leakage_a / 100) * average_annual_capacity * self.__total_hours
         return round(annual_leakage_loss, 3)
-
-    def __float__(self):
-        """
-        Позволяет получать значение утечек при преобразовании объекта в float.
-        """
-        return self.leakage_loss

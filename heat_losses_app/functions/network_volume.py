@@ -18,7 +18,7 @@ class NetworkVolume:
     def __init__(self, pipes_standard: QuerySet, pipeline_segments: QuerySet, conf: Config):
         self.__pipes_standard = pipes_standard
         self.__pipeline_segments = pipeline_segments
-        self.a = conf.volume_network.norm_leakage_a
+        self.__norm_leakage_a = conf.volume_network.norm_leakage_a
 
         #result:
         self.total_volume_network = self.__total_volume_network()
@@ -86,5 +86,5 @@ class NetworkVolume:
         """
         Cреднечасовая годовая норма потерь теплоносителя, обусловленных утечкой
         """
-        result = self.a * self.total_volume_network / 100
+        result = self.__norm_leakage_a * self.total_volume_network / 100
         return round(result, 3)
