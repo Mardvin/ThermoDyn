@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from heat_losses_app.forms import AddPipeLineSegment
-from heat_losses_app.functions.main_heat_losses import MainHeatLosses, DataRepository
+from heat_losses_app.functions.main_heat_losses import MainHeatLosses, DataRepository, main_heat_losses
 from heat_losses_app.functions.temperature_analysis import TemperatureCalculator, calculate_utilized_heat
 from heat_losses_app.models import PipelineSegment, TemperatureGraph
 
@@ -15,6 +15,7 @@ menu = [
     {'title': "Войти", 'url_name': 'login'},
 ]
 
+
 class PipelineSegmentTable(ListView):
     hourly_annual_coolant = TemperatureCalculator().result()
     hourly_annual_coolant_supply = hourly_annual_coolant['supply']
@@ -23,19 +24,18 @@ class PipelineSegmentTable(ListView):
     model = PipelineSegment
     template_name = 'heat_losses_app/heat_losses.html'
     context_object_name = 'segments'
+    total_volume = main_heat_losses.network_volume.total_volume_network
 
     def get_context_data(self, **kwargs):
-        total_volume = MainHeatLosses.network_volume.total_volume_network
-
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
         context['menu'] = menu
-        context['network_volume'] = total_volume
-        context['network_leakage'] = MainHeatLosses.network_leakage.leakage_loss
+        context['network_volume'] = main_heat_losses.network_volume.total_volume_network
+        context['network_leakage'] = main_heat_losses.network_leakage.leakage_loss
         context['segments'] = DataRepository.get_all_segments()
         context['temperature_graph'] = TemperatureGraph.objects.all()
         context['temperature_supply_return'] = TemperatureCalculator().result()
-        context['hourly_annual_coolant_leakage'] = MainHeatLosses.network_volume.hourly_annual_coolant_leakage_norm
+        context['hourly_annual_coolant_leakage'] = main_heat_losses.network_volume.hourly_annual_coolant_leakage_norm
         return context
 
 
@@ -46,6 +46,7 @@ class CreatePipelineSegment(CreateView):
 
     def form_valid(self, form):
         form.save()
+        main_heat_losses.update_result()
         return super().form_valid(form)
 
 
@@ -54,6 +55,11 @@ class UpdatePipeline(UpdateView):
     form_class = AddPipeLineSegment
     template_name = 'heat_losses_app/create_pipeline_segment.html'
     success_url = reverse_lazy('heat_losses')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        main_heat_losses.update_result()
+        return response
 
 
 class DeletePipeline(DeleteView):
@@ -65,4 +71,5 @@ class DeletePipeline(DeleteView):
         """Переопределяем post, чтобы сразу удалять без подтверждения"""
         self.object = self.get_object()
         self.object.delete()
+        main_heat_losses.update_result()
         return redirect(self.success_url)
