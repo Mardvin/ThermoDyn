@@ -1,7 +1,7 @@
 from django.db.models import QuerySet
 
 from config import load_config
-from heat_losses_app.functions.heat_loss_leakage import LeakageNetwork
+from heat_losses_app.functions.heat_loss_leakage import NetworkLeakage
 from heat_losses_app.functions.network_volume import NetworkVolume
 from heat_losses_app.models import PipelineSegment, PipeStandard
 
@@ -27,12 +27,27 @@ class DataRepository:
 
 
 class MainHeatLosses:
-    network_volume = NetworkVolume(
-        DataRepository.get_pipe_standards(),
-        DataRepository.get_all_segments(),
-        conf=config,
-    )
-    network_leakage = LeakageNetwork(
-        network_volume.total_volume_network,
-        conf=config,
-    )
+    def __init__(self):
+        """Создаём объект с новыми данными"""
+        self.network_volume = NetworkVolume(
+            DataRepository.get_pipe_standards(),
+            DataRepository.get_all_segments(),
+            conf=config,
+        )
+        self.network_leakage = NetworkLeakage(
+            self.network_volume.total_volume_network,
+            conf=config,
+        )
+
+    def update_result(self):
+        self.network_volume = NetworkVolume(
+            DataRepository.get_pipe_standards(),
+            DataRepository.get_all_segments(),
+            conf=config,
+        )
+        self.network_leakage = NetworkLeakage(
+            self.network_volume.total_volume_network,
+            conf=config,
+        )
+
+main_heat_losses = MainHeatLosses()

@@ -1,7 +1,7 @@
 from config import Config
 
 
-class LeakageNetwork:
+class NetworkLeakage:
     def __init__(self, volume_pipelines: float, conf: Config):
         """
         Класс для расчета годовых потерь теплоносителя утечкой.
