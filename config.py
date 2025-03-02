@@ -4,11 +4,13 @@ from pydantic import BaseModel, Field, ValidationError
 class GeneralConfig(BaseModel):
     heating_hours: int = Field(default=5160, description="Количество часов отопительного периода")
     heating_summer_hours: int = Field(default=0, description="Количество часов летнего периода")
+    density_water: int = Field(default=1000, description="Плотность воды")
+    specific_heat: int = Field(default=1, description="Удельная теплоемкость теплоносителя (ккал/(кг·°C))")
+    temp_distribution_coeff: int = Field(default=0.75, description="Доля массового расхода теплоносителя, "
+                                                                   "теряемого подающим трубопроводом")
 
 class TemperatureConfig(BaseModel):
-    temp_stage1: float = Field(description="Температура первой стадии (°C)")
-    temp_stage2: float = Field(description="Температура второй стадии (°C)")
-    ambient_temp: float = Field(description="Температура окружающей среды (°C)")
+    temp_water_supplementation: int= Field(default=5, description="Температура окружающей среды (°C)")
 
 class VolumeNetworkConfig(BaseModel):
     norm_leakage_a: float = Field(default=0.25, description="норма среднегодовой утечки теплоносителя (м³/ч×м³)")
@@ -27,12 +29,12 @@ def load_config(config_path: str = "constant.conf") -> Config:
         general = GeneralConfig(
             heating_hours=int(config["general"]["heating_hours"]),
             heating_summer_hours=int(config["general"]["heating_summer_hours"]),
+            density_water=int(config["general"]["density_water"]),
+            specific_heat=int(config["general"]["specific_heat"]),
         )
 
         temperature = TemperatureConfig(
-            temp_stage1=float(config["temperature"]["temp_stage1"]),
-            temp_stage2=float(config["temperature"]["temp_stage2"]),
-            ambient_temp=float(config["temperature"]["ambient_temp"]),
+            temp_water_supplementation=int(config["temperature"]["temp_water_supplementation"]),
         )
 
         volume_network = VolumeNetworkConfig(

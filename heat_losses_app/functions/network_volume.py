@@ -19,6 +19,7 @@ class NetworkVolume:
         self.__pipes_standard = pipes_standard
         self.__pipeline_segments = pipeline_segments
         self.__norm_leakage_a = conf.volume_network.norm_leakage_a
+        self.__conf = conf
 
         #result:
         self.total_volume_network = self.__total_volume_network()

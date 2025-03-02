@@ -3,7 +3,8 @@ from django.db.models import QuerySet
 from config import load_config
 from heat_losses_app.functions.heat_loss_leakage import NetworkLeakage
 from heat_losses_app.functions.network_volume import NetworkVolume
-from heat_losses_app.models import PipelineSegment, PipeStandard
+from heat_losses_app.functions.temperature_analysis import TemperatureCalculator
+from heat_losses_app.models import PipelineSegment, PipeStandard, TemperatureGraph
 
 config = load_config()
 
@@ -19,11 +20,14 @@ class DataRepository:
         """Получает все сегменты трубопровода."""
         return PipelineSegment.objects.all()
 
-
     @staticmethod
     def get_pipe_standards() -> QuerySet:
         """Получает все стандарты по трубам."""
         return PipeStandard.objects.all()
+
+    @staticmethod
+    def get_temperature_graph() -> QuerySet:
+        return TemperatureGraph.objects.all()
 
 
 class MainHeatLosses:
@@ -38,6 +42,10 @@ class MainHeatLosses:
             self.network_volume.total_volume_network,
             conf=config,
         )
+        self.average_annual_temperature_networks = TemperatureCalculator(
+            conf=config,
+            annual_coolant_leakage_norm=self.network_volume.hourly_annual_coolant_leakage_norm
+        )
 
     def update_result(self):
         self.network_volume = NetworkVolume(
@@ -48,6 +56,10 @@ class MainHeatLosses:
         self.network_leakage = NetworkLeakage(
             self.network_volume.total_volume_network,
             conf=config,
+        )
+        self.average_annual_temperature_networks = TemperatureCalculator(
+            conf=config,
+            annual_coolant_leakage_norm=self.network_volume.hourly_annual_coolant_leakage_norm
         )
 
 main_heat_losses = MainHeatLosses()

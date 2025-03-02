@@ -3,8 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from heat_losses_app.forms import AddPipeLineSegment
-from heat_losses_app.functions.main_heat_losses import MainHeatLosses, DataRepository, main_heat_losses
-from heat_losses_app.functions.temperature_analysis import TemperatureCalculator, calculate_utilized_heat
+from heat_losses_app.functions.main_heat_losses import DataRepository, main_heat_losses
 from heat_losses_app.models import PipelineSegment, TemperatureGraph
 
 # Create your views here.
@@ -17,14 +16,9 @@ menu = [
 
 
 class PipelineSegmentTable(ListView):
-    hourly_annual_coolant = TemperatureCalculator().result()
-    hourly_annual_coolant_supply = hourly_annual_coolant['supply']
-    hourly_annual_coolant_return = hourly_annual_coolant['return']
-
     model = PipelineSegment
     template_name = 'heat_losses_app/heat_losses.html'
     context_object_name = 'segments'
-    total_volume = main_heat_losses.network_volume.total_volume_network
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,9 +27,11 @@ class PipelineSegmentTable(ListView):
         context['network_volume'] = main_heat_losses.network_volume.total_volume_network
         context['network_leakage'] = main_heat_losses.network_leakage.leakage_loss
         context['segments'] = DataRepository.get_all_segments()
-        context['temperature_graph'] = TemperatureGraph.objects.all()
-        context['temperature_supply_return'] = TemperatureCalculator().result()
+        context['temperature_graph'] = DataRepository.get_temperature_graph()
+        context['temperature_supply'] = main_heat_losses.average_annual_temperature_networks.supply_network
+        context['temperature_return'] = main_heat_losses.average_annual_temperature_networks.return_network
         context['hourly_annual_coolant_leakage'] = main_heat_losses.network_volume.hourly_annual_coolant_leakage_norm
+        context['calculate_utilized_heat'] = main_heat_losses.average_annual_temperature_networks.utilized_heat
         return context
 
 

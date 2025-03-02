@@ -1,4 +1,7 @@
 # from django.db.models import Avg
+from django.db.models import QuerySet
+
+from config import Config
 from heat_losses_app.models import TemperatureGraph
 
 MONTH_DAYS = {
@@ -22,12 +25,20 @@ class TemperatureCalculator:
 
     MONTH_MAPPING = {month: month for month in MONTH_DAYS}  # Маппинг месяцев
 
-    def __init__(self):
-        """Инициализация без данных — они берутся из БД."""
-        self.data = self.get_temperature_data()  # Загружаем данные при создании объекта
+    def __init__(self, conf: Config, annual_coolant_leakage_norm: float):
+        self.__temperature_graph = TemperatureGraph.objects.values(
+            "pipe_type", *MONTH_DAYS.keys()
+        )
+        self.__temperature_graph_supply_return = self.__get_temperature_data()
+        self.__heating_hours = conf.general.heating_hours
+        self.__hourly_annual_coolant_leakage_norm = annual_coolant_leakage_norm
+        self.__conf = conf
+         # Возвращает:
+        self.supply_network = self.__calculate_yearly_temperature('supply')
+        self.return_network = self.__calculate_yearly_temperature('return')
+        self.utilized_heat = self.__calculate_utilized_heat()
 
-    @staticmethod
-    def get_temperature_data():
+    def __get_temperature_data(self):
         """
         Получает данные из модели TemperatureGraph и возвращает
         словарь:
@@ -36,66 +47,46 @@ class TemperatureCalculator:
             "return": { "january": 50, "february": 45, ... }
         }
         """
-        data = TemperatureGraph.objects.values(
-            "pipe_type", *MONTH_DAYS.keys()
-        )
-
         result = {"supply": {}, "return": {}}
 
-        for entry in data:
+        for entry in self.__temperature_graph:
             pipe_type = "supply" if entry["pipe_type"] == "Подающий" else "return"
             for month in TemperatureCalculator.MONTH_MAPPING:
                 result[pipe_type][month] = entry[month]
 
         return result
 
-    def calculate_yearly_temperature(self, pipe_type: str) -> float:
+    def __calculate_yearly_temperature(self, pipe_type: str) -> float:
         """
         Вычисляет среднегодовую температуру для указанного трубопровода.
         :param pipe_type: "supply" или "return"
         :return: Среднегодовая температура
         """
-        if pipe_type not in self.data:
+        if pipe_type not in self.__temperature_graph_supply_return:
             return 0
 
-        total_hours = 5160
         total_sum = sum(
-            self.data[pipe_type][month] * MONTH_DAYS[month] * 24
+            self.__temperature_graph_supply_return[pipe_type][month] * MONTH_DAYS[month] * 24
             for month in MONTH_DAYS
-            if month in self.data[pipe_type]
+            if month in self.__temperature_graph_supply_return[pipe_type]
         )
+        return round(total_sum / self.__heating_hours if self.__heating_hours else 0, 2)
 
-        return round(total_sum / total_hours if total_hours else 0, 2)
+    def __calculate_utilized_heat(self) -> float:
+        """
+        Вычисляет нормативное значение годовых технологических тепловых потерь с утечкой
 
-    def result(self):
-        return {'supply': self.calculate_yearly_temperature('supply'), 'return': self.calculate_yearly_temperature('return')}
+        :return: Технологичкие потери с утечкой (Гкал)
+        """
+        density_water = self.__conf.general.density_water
+        specific_heat = self.__conf.general.specific_heat
+        temp_distribution_coeff = self.__conf.general.temp_distribution_coeff
+        temp_water_supplementation = self.__conf.temperature.temp_water_supplementation
+        heating_hours = self.__conf.general.heating_hours
 
-
-def calculate_utilized_heat(temp_stage1, temp_stage2,):
-    """
-    Вычисляет количество утилизируемого тепла Q_у.н. по заданной формуле.
-
-    :param mass_per_year: среднечасовая годовая норма потерь теплоносителя, обусловленных утечкой (кг)
-    :param density: Плотность теплоносителя (кг/м³)
-    :param specific_heat: Удельная теплоёмкость (Дж/(кг·°C))
-    :param temp_distribution_coeff: Коэффициент распределения температур (безразмерный)
-    :param temp_stage1: Температура первой стадии (°C)
-    :param temp_stage2: Температура второй стадии (°C)
-    :param ambient_temp: Температура окружающей среды (°C)
-    :param heat_utilization_coeff: отопительный период ч
-    :return: Утилизируемое тепло (Гкал)
-    """
-    mass_per_year = 0.15  # Например, 1000 кг
-    density = 1000  # Плотность воды 1000 кг/м³
-    specific_heat = 1  # удельная теплоемкость теплоносителя (ккал/(кг·°C))
-    temp_distribution_coeff = 0.75  # Например, 0.5
-    ambient_temp = 5  # Температура холодной воды подпитки (°C)
-    heat_utilization_coeff = 5160  # Отопительный период
-
-    utilized_heat = (
-        mass_per_year * density * specific_heat *
-        (temp_distribution_coeff * temp_stage1 + (1 - temp_distribution_coeff) * temp_stage2 - ambient_temp) *
-        heat_utilization_coeff
-    ) * 10**-6
-    return round(utilized_heat, 2)
-
+        utilized_heat = (
+                                self.__hourly_annual_coolant_leakage_norm * density_water * specific_heat *
+                                (temp_distribution_coeff * self.supply_network + (1 - temp_distribution_coeff)
+                                 * self.return_network - temp_water_supplementation) * heating_hours
+                        ) * 10 ** -6
+        return round(utilized_heat, 2)
