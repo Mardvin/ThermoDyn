@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from heat_losses_app.forms import AddPipeLineSegment
 from heat_losses_app.functions.main_heat_losses import DataRepository, main_heat_losses
-from heat_losses_app.models import PipelineSegment, TemperatureGraph
+from heat_losses_app.models.models import PipelineSegment
 
 # Create your views here.
 
@@ -32,6 +32,7 @@ class PipelineSegmentTable(ListView):
         context['temperature_return'] = main_heat_losses.average_annual_temperature_networks.return_network
         context['hourly_annual_coolant_leakage'] = main_heat_losses.network_volume.hourly_annual_coolant_leakage_norm
         context['calculate_utilized_heat'] = main_heat_losses.average_annual_temperature_networks.utilized_heat
+        context['cost_filling_heat'] = main_heat_losses.average_annual_temperature_networks.cost_heat_fillup
         return context
 
 

@@ -4,7 +4,7 @@ from config import load_config
 from heat_losses_app.functions.heat_loss_leakage import NetworkLeakage
 from heat_losses_app.functions.network_volume import NetworkVolume
 from heat_losses_app.functions.temperature_analysis import TemperatureCalculator
-from heat_losses_app.models import PipelineSegment, PipeStandard, TemperatureGraph
+from heat_losses_app.models.models import PipelineSegment, PipeStandard, TemperatureGraph
 
 config = load_config()
 
@@ -43,8 +43,9 @@ class MainHeatLosses:
             conf=config,
         )
         self.average_annual_temperature_networks = TemperatureCalculator(
-            conf=config,
-            annual_coolant_leakage_norm=self.network_volume.hourly_annual_coolant_leakage_norm
+            conf = config,
+            annual_coolant_leakage_norm=self.network_volume.hourly_annual_coolant_leakage_norm,
+            volume_network = self.network_volume.total_volume_network,
         )
 
     def update_result(self):
@@ -59,7 +60,8 @@ class MainHeatLosses:
         )
         self.average_annual_temperature_networks = TemperatureCalculator(
             conf=config,
-            annual_coolant_leakage_norm=self.network_volume.hourly_annual_coolant_leakage_norm
+            annual_coolant_leakage_norm=self.network_volume.hourly_annual_coolant_leakage_norm,
+            volume_network = self.network_volume.total_volume_network,
         )
 
 main_heat_losses = MainHeatLosses()

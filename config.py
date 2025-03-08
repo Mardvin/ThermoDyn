@@ -11,6 +11,11 @@ class GeneralConfig(BaseModel):
 
 class TemperatureConfig(BaseModel):
     temp_water_supplementation: int= Field(default=5, description="Температура окружающей среды (°C)")
+    temp_fill_water: int = Field(default=40, description="Температура воды, используемой для заполнения трубопровода "
+                                                         "(°C)")
+    temp_underground: int = Field(default=5, description="Температура грунта (°C)")
+    temp_aboveground: int = Field(default=-25, description="Температура воздуха (°C)")
+    temp_in_channel: int = Field(default=15, description="Температура в канале (°C)")
 
 class VolumeNetworkConfig(BaseModel):
     norm_leakage_a: float = Field(default=0.25, description="норма среднегодовой утечки теплоносителя (м³/ч×м³)")
@@ -35,6 +40,10 @@ def load_config(config_path: str = "constant.conf") -> Config:
 
         temperature = TemperatureConfig(
             temp_water_supplementation=int(config["temperature"]["temp_water_supplementation"]),
+            temp_fill_water=int(config["temperature"]["temp_fill_water"]),
+            temp_underground=int(config["temperature"]["temp_underground"]),
+            temp_aboveground=int(config["temperature"]["temp_aboveground"]),
+            temp_in_channel=int(config["temperature"]["temp_in_channel"]),
         )
 
         volume_network = VolumeNetworkConfig(

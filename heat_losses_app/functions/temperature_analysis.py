@@ -1,8 +1,7 @@
 # from django.db.models import Avg
-from django.db.models import QuerySet
 
 from config import Config
-from heat_losses_app.models import TemperatureGraph
+from heat_losses_app.models.models import TemperatureGraph
 
 MONTH_DAYS = {
     "january": 31,
@@ -25,10 +24,8 @@ class TemperatureCalculator:
 
     MONTH_MAPPING = {month: month for month in MONTH_DAYS}  # Маппинг месяцев
 
-    def __init__(self, conf: Config, annual_coolant_leakage_norm: float):
-        self.__temperature_graph = TemperatureGraph.objects.values(
-            "pipe_type", *MONTH_DAYS.keys()
-        )
+    def __init__(self, conf: Config, annual_coolant_leakage_norm: float, volume_network):
+        self.__temperature_graph = TemperatureGraph.objects.values("pipe_type", *MONTH_DAYS.keys() )
         self.__temperature_graph_supply_return = self.__get_temperature_data()
         self.__heating_hours = conf.general.heating_hours
         self.__hourly_annual_coolant_leakage_norm = annual_coolant_leakage_norm
@@ -37,6 +34,7 @@ class TemperatureCalculator:
         self.supply_network = self.__calculate_yearly_temperature('supply')
         self.return_network = self.__calculate_yearly_temperature('return')
         self.utilized_heat = self.__calculate_utilized_heat()
+        self.cost_heat_fillup = self.__calculate_heat_fillup(volume_network)
 
     def __get_temperature_data(self):
         """
@@ -90,3 +88,17 @@ class TemperatureCalculator:
                                  * self.return_network - temp_water_supplementation) * heating_hours
                         ) * 10 ** -6
         return round(utilized_heat, 2)
+
+    def __calculate_heat_fillup(self, volume_network):
+        """
+        Рассчитывает количество тепла, необходимое для заполнения трубопроводов и оборудования.
+
+        :param fill_temp: Температура сетевой воды при заполнении, °C
+        :param cold_temp: Температура холодной воды, °C
+        :return: Количество тепла (Q_зап) в Гкал
+        """
+        conversion_factor = 1.5 * 10**-6  # Коэффициент пересчета в Гкал
+
+        heat_energy = conversion_factor * volume_network * self.__conf.general.density_water * (
+                self.__conf.temperature.temp_fill_water - self.__conf.temperature.temp_water_supplementation)
+        return round(heat_energy, 2)  # Гкал

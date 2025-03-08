@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Расчет потерь через изоляцию</h1>
+
+{% for laying_type in laying_types %}
+<h2>{{ laying_type.1 }}</h2>
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th rowspan="2">Наружный диаметр трубопровода, мм</th>
+            <th rowspan="2">Длина участка (км)</th>
+            <th rowspan="2">Теплоизоляционный материал</th>
+            <th rowspan="2">Толщина материала мм</th>
+            <th colspan="2">Удельные теплопотери, ккал/(м·ч)</th>
+            <th rowspan="2">Действия</th>
+        </tr>
+        <tr>
+            <th>Подающий трубопровод</th>
+            <th>Обратный трубопровод</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for heat_loss in heat_losses_by_type %}
+            {% if heat_loss.laying_type == laying_type.0 %}
+                {% for item in heat_loss.heat_losses %}
+                    <tr>
+                        <td>{{ item.pipeline_segment.diameter }}</td>
+                        <td>{{ item.pipeline_segment.length|floatformat:3 }}</td>
+                        <td>{{ item.pipeline_segment.insulation_material }}</td>
+                        <td>{{ item.insulation_thickness_mm }}</td>
+                        <td>{{ item.heat_loss_supply|floatformat:2 }}</td>
+                        <td>{{ item.heat_loss_return|floatformat:2 }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="dropbtn">⋮</button>
+                                <div class="dropdown-content">
+                                    <!-- Удаленные ссылки, если нужно -->
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8">Нет данных</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+
+    <!-- Кнопка для перехода на страницу добавления -->
+<a href="{% url 'create_pipeline_insulation' %}" class="btn btn-primary">Добавить</a>
+
+{% endblock %}
