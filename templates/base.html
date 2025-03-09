@@ -3,10 +3,11 @@
 <html>
 <head>
 	<title>{{title}}</title>
-	 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{% static 'thermo/css/form.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'thermo/css/dropdown.css' %}">
-	<link type="text/css" href="{% static 'thermo/css/styles.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'thermo/css/styles.css' %}">
+{#	<link type="text/css" href="{% static 'thermo/css/styles.css' %}" rel="stylesheet" />#}
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="shortcut icon" href="{% static 'thermo/images/main.ico' %}" type="image/x-icon"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,10 +33,25 @@
 <tr>
 	<!-- Sidebar слева -->
 	<td valign="top" class="left-chapters">
-	<ul id="leftchapters">
-		{% for m in left_menu %}
-			<li><a href="{% url m.url_name %}">{{m.title}}</a></li>
-		{% endfor %}
+    <ul id="leftchapters" class="nav flex-column">
+        <!-- Обычные ссылки -->
+        <li><a class="nav-link text-dark fw-bold" href="{% url 'result' %}">Результаты расчетов</a></li>
+        <li><a class="nav-link text-dark fw-bold" href="{% url 'heat_power' %}">Расчет тепловой мощности</a></li>
+
+        <!-- Расчет тепловых потерь (с вложенным списком) -->
+        <li class="nav-item">
+            <a class="nav-link text-dark fw-bold" data-bs-toggle="collapse" href="#heatLossesMenu" role="button">
+                Расчет тепловых потерь
+            </a>
+            <div class="collapse" id="heatLossesMenu">
+                <ul class="list-unstyled ms-3">
+                    <li><a class="nav-link text-dark" href="{% url 'heat_losses' %}">Потери с утечкой и
+                        заполнение трубопровода </a></li>
+                    <li><a class="nav-link text-dark" href="{% url 'insulation_losses' %}">Потери через изоляцию</a></li>
+                    <li><a class="nav-link text-dark" href="{% url 'heat_losses' %}">Дополнительные потери</a></li>
+                </ul>
+            </div>
+        </li>
 		<li class="share">
 		<p>Наш канал</p>
 		<a class="share-yt" href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists" target="_blank" rel="nofollow"></a>
@@ -65,4 +81,5 @@
 </td></tr></table>
 <!-- Конец footer'а и страницы -->
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </html>

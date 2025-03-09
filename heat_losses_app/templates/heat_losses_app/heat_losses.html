@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>Определение количества теплоты на отопление</h1>
+
+<h1>Расчет потерь с утечкой</h1>
 
 <h3 class="text-center">Характеристики тепловых сетей</h3>
 <table class="table table-bordered text-center">
@@ -143,7 +144,14 @@
 <h4>Расчет нормативного значения годовых технологических тепловых потерь с утечкой:</h4>
 
 <div class="summary-block">
-    <strong>{{calculate_utilized_heat}} м3/ч</strong>
+    <strong>{{calculate_utilized_heat}} Гкал</strong>
+</div>
+
+
+<h1>Затраты теплоносителя на заполнение трубопровода:</h1>
+
+<div class="summary-block">
+    <strong>{{cost_filling_heat}} Гкал</strong>
 </div>
 
 <script src="{% static 'heat_losses/js/dropdown.js' %}"></script>

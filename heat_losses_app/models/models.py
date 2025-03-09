@@ -3,15 +3,14 @@ from django.db import models
 # Create your models here.
 
 class LayingType(models.TextChoices):
-    UNDERGROUND = "Подземная", "Подземная"
-    ABOVEGROUND = "Наземная", "Наземная"
+    UNDERGROUND = "Подземная прокладка", "Подземная прокладка"
+    ABOVEGROUND = "Наземная прокладка", "Наземная прокладка"
     CHANNEL = "В канале", "В канале"
 
 class InsulationType(models.TextChoices):
     MINERAL_WOOL = "Минеральная вата", "Минеральная вата"
     POLYURETHANE = "Пенополиуретан", "Пенополиуретан"
-    FOAMGLASS = "Пеностеклоs", "Пеностекло"
-    NONE = "Без изоляции", "Без изоляции"
+    FOAMGLASS = "Пеностекло", "Пеностекло"
 
 
 class PipelineSegment(models.Model):

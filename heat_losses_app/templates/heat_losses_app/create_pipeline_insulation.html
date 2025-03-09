@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Добавить теплоизоляцию к участку</h2>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="form-error">{{ form.non_field_errors }}</div>
+
+    {% for f in form %}
+        <div class="form-group">
+            <p>
+                <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}:</label>
+                {{ f }}
+            </p>
+        </div>
+        <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+</form>
+
+<!-- Ссылка на возврат -->
+<a href="{% url 'insulation_losses' %}" class="btn btn-secondary">Назад</a>
+{% endblock %}
