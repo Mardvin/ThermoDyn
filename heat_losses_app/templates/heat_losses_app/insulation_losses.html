@@ -36,7 +36,14 @@
                             <div class="dropdown">
                                 <button class="dropbtn">⋮</button>
                                 <div class="dropdown-content">
-                                    <!-- Удаленные ссылки, если нужно -->
+                                    <a href="{% url 'edit_insulation' item.id %}">Редактировать</a>
+                                    <a href="#"
+                                       class="delete-btn"
+                                       data-segment-id="{{ item.id }}"
+                                       data-delete-url="{% url 'delete_insulation' 0 %}"
+                                       data-csrf-token="{{ csrf_token }}">
+                                        Удалить
+                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -54,5 +61,7 @@
 
     <!-- Кнопка для перехода на страницу добавления -->
 <a href="{% url 'create_pipeline_insulation' %}" class="btn btn-primary">Добавить</a>
+
+<script src="{% static 'heat_losses/js/dropdown.js' %}"></script>
 
 {% endblock %}
