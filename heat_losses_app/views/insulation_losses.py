@@ -49,3 +49,26 @@ class CreateInsulationLosses(CreateView):
     def form_valid(self, form):
         form.save()
         return super().form_valid(form)
+
+
+class UpdateInsulationLosses(UpdateView):
+    model = HeatLossInsulation
+    form_class = AddPipelineInsulationForm
+    template_name = 'heat_losses_app/create_pipeline_insulation.html'
+    success_url = reverse_lazy('insulation_losses')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        return response
+
+
+class DeleteInsulationLosses(DeleteView):
+    model = HeatLossInsulation
+    template_name = 'heat_losses_app/insulation_losses.html'
+    success_url = reverse_lazy('insulation_losses')
+
+    def post(self, request, *args, **kwargs):
+        """Переопределяем post, чтобы сразу удалять без подтверждения"""
+        self.object = self.get_object()
+        self.object.delete()
+        return redirect(self.success_url)
