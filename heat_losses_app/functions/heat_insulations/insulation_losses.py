@@ -1,5 +1,8 @@
 from collections import defaultdict
 
+from django.db.models import QuerySet
+
+from config import Config
 from heat_losses_app.models import HeatLossInsulation
 from heat_losses_app.models.models import PipelineSegment
 
@@ -11,16 +14,18 @@ class HeatLossCalculator:
         "В канале": "channel",
     }
 
-    def __init__(self):
+    def __init__(self, conf: Config, pipeline_segments: QuerySet):
         """
         Инициализация калькулятора теплопотерь.
         `heat_loss_by_laying_type` хранит сумму потерь по каждому типу прокладки + общий итог.
         """
         # Инициализация словаря с нулями для каждого типа прокладки и общего итога
-        self.heat_loss_by_laying = self.calculate_heat_loss()
-        self.result_insulation = self.get_results()
+        self.__pipeline_segments = pipeline_segments
+        self.__heat_loss_by_laying = self.__calculate_heat_loss()
+        self.result_insulation = self.__get_results()
+        self.year_insulation = round(self.result_insulation["total"] *  conf.general.heating_hours, 2)
 
-    def calculate_heat_loss(self):
+    def __calculate_heat_loss(self):
         """
         Рассчитывает суммарные часовые теплопотери для каждого типа прокладки.
         """
@@ -30,9 +35,8 @@ class HeatLossCalculator:
             "channel": 0,
             "total": 0
         }
-        pipeline_segments = PipelineSegment.objects.all()
 
-        for segment in pipeline_segments:
+        for segment in self.__pipeline_segments:
             heat_loss_insulation = HeatLossInsulation.objects.filter(pipeline_segment=segment).first()
 
             if not heat_loss_insulation:
@@ -61,8 +65,8 @@ class HeatLossCalculator:
                 heat_loss_by_laying_type["total"] += total_heat_loss_gcal_per_hour
         return heat_loss_by_laying_type
 
-    def get_results(self):
+    def __get_results(self):
         """
         Возвращает словарь с теплопотерями по каждому типу прокладки + общий итог (округленные значения).
         """
-        return {key: round(value, 5) for key, value in self.heat_loss_by_laying.items()}
+        return {key: round(value, 5) for key, value in self.__heat_loss_by_laying.items()}
