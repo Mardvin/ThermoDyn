@@ -39,6 +39,7 @@ class InsulationLossesView(ListView):
             for laying_type in LayingType.choices
         ]
         context['heat_insulation'] = main_heat_insulation.heat_insulation.result_insulation
+        context['year_insulation'] = main_heat_insulation.heat_insulation.year_insulation
 
         return context
 
