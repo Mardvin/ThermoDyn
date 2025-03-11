@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from heat_losses_app.forms import AddPipeLineSegment
-from heat_losses_app.functions.main_heat_losses import DataRepository, main_heat_losses
+from heat_losses_app.functions.heat_loss.main_heat_losses import DataRepository, main_heat_losses
 from heat_losses_app.models.models import PipelineSegment
 
 # Create your views here.
@@ -24,7 +24,7 @@ class PipelineSegmentTable(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
         context['menu'] = menu
-        context['network_volume'] = main_heat_losses.network_volume.total_volume_network
+        context['heat_insulation'] = main_heat_losses.network_volume.total_volume_network
         context['network_leakage'] = main_heat_losses.network_leakage.leakage_loss
         context['segments'] = DataRepository.get_all_segments()
         context['temperature_graph'] = DataRepository.get_temperature_graph()

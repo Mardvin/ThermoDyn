@@ -62,6 +62,30 @@
     <!-- Кнопка для перехода на страницу добавления -->
 <a href="{% url 'create_pipeline_insulation' %}" class="btn btn-primary">Добавить</a>
 
+
+<h1>Часовые нормы тепловых потерь для разных видов прокладки:</h1>
+
+<h3>Подземная прокладка: </h3>
+<div class="summary-block">
+    <strong>{{heat_insulation.underground}} Гкал/ч</strong>
+</div>
+
+<h3>Наземная прокладка: </h3>
+<div class="summary-block">
+    <strong>{{heat_insulation.above_ground}} Гкал/ч</strong>
+</div>
+
+<h3>В канале: </h3>
+<div class="summary-block">
+    <strong>{{heat_insulation.channel}} Гкал/ч</strong>
+</div>
+
+<h3>Общие потери: </h3>
+<div class="summary-block">
+    <strong>{{heat_insulation.total}} Гкал/ч</strong>
+</div>
+
+
 <script src="{% static 'heat_losses/js/dropdown.js' %}"></script>
 
 {% endblock %}
