@@ -1,8 +1,7 @@
 from django.db import models
-import math
 
-from heat_losses_app.functions.heat_flux import calculate_heat_flux
-from heat_losses_app.functions.main_heat_losses import main_heat_losses
+from heat_losses_app.functions.heat_insulations.heat_flux import calculate_heat_flux
+from heat_losses_app.functions.heat_loss.main_heat_losses import main_heat_losses
 from heat_losses_app.models.models import PipelineSegment
 
 

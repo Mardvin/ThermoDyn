@@ -2,8 +2,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from heat_losses_app.forms import AddPipeLineSegment, AddPipelineInsulationForm
-from heat_losses_app.functions.main_heat_losses import DataRepository, main_heat_losses
+from heat_losses_app.forms import AddPipelineInsulationForm
+from heat_losses_app.functions.heat_insulations.main_heat_insulations import main_heat_insulation
 from heat_losses_app.models.insulation_losses import HeatLossInsulation
 from heat_losses_app.models.models import LayingType
 
@@ -18,6 +18,7 @@ class HeatLossByType:
     def __init__(self, laying_type, heat_losses):
         self.laying_type = laying_type
         self.heat_losses = heat_losses
+
 
 class InsulationLossesView(ListView):
     model = HeatLossInsulation
@@ -37,6 +38,7 @@ class InsulationLossesView(ListView):
             HeatLossByType(laying_type[0], HeatLossInsulation.objects.filter(pipeline_segment__laying_type=laying_type[0]))
             for laying_type in LayingType.choices
         ]
+        context['heat_insulation'] = main_heat_insulation.heat_insulation.result_insulation
 
         return context
 
@@ -48,6 +50,7 @@ class CreateInsulationLosses(CreateView):
 
     def form_valid(self, form):
         form.save()
+        main_heat_insulation.update_result()
         return super().form_valid(form)
 
 
@@ -59,6 +62,7 @@ class UpdateInsulationLosses(UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        main_heat_insulation.update_result()
         return response
 
 
@@ -71,4 +75,5 @@ class DeleteInsulationLosses(DeleteView):
         """Переопределяем post, чтобы сразу удалять без подтверждения"""
         self.object = self.get_object()
         self.object.delete()
+        main_heat_insulation.update_result()
         return redirect(self.success_url)

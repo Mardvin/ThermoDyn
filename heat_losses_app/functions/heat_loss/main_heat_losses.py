@@ -1,33 +1,13 @@
 from django.db.models import QuerySet
 
 from config import load_config
-from heat_losses_app.functions.heat_loss_leakage import NetworkLeakage
-from heat_losses_app.functions.network_volume import NetworkVolume
-from heat_losses_app.functions.temperature_analysis import TemperatureCalculator
-from heat_losses_app.models.models import PipelineSegment, PipeStandard, TemperatureGraph
+from heat_losses_app.functions.core.db import DataRepository
+from heat_losses_app.functions.heat_loss.heat_loss_leakage import NetworkLeakage
+from heat_losses_app.functions.heat_loss.network_volume import NetworkVolume
+from heat_losses_app.functions.heat_loss.temperature_analysis import TemperatureCalculator
+
 
 config = load_config()
-
-
-class DataRepository:
-    """
-    Универсальный репозиторий для работы с базой данных.
-    Позволяет получать данные из различных моделей Django.
-    """
-
-    @staticmethod
-    def get_all_segments() -> QuerySet:
-        """Получает все сегменты трубопровода."""
-        return PipelineSegment.objects.all()
-
-    @staticmethod
-    def get_pipe_standards() -> QuerySet:
-        """Получает все стандарты по трубам."""
-        return PipeStandard.objects.all()
-
-    @staticmethod
-    def get_temperature_graph() -> QuerySet:
-        return TemperatureGraph.objects.all()
 
 
 class MainHeatLosses:
