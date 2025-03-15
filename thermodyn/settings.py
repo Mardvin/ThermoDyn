@@ -75,6 +75,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'heat_losses_app.context_processors.left_menu',
+                'heat_losses_app.context_processors.up_menu',
             ],
         },
     },

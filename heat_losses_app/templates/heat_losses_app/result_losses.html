@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Суммарные годовые нормы тепловых потерь </h1>
+
+
+
+<h3>Потери на заполнение трубопровода: </h3>
+<div class="summary-block">
+    <strong>{{cost_filling_heat}} Гкал</strong>
+</div>
+
+<h3>Потери с утечкой: </h3>
+<div class="summary-block">
+    <strong>{{calculate_utilized_heat}} Гкал</strong>
+</div>
+
+<h3>Потери через изоляцию: </h3>
+<div class="summary-block">
+    <strong>{{year_insulation}} Гкал</strong>
+</div>
+
+<h3>Сумма тепловых потерь: </h3>
+<div class="summary-block">
+    <strong>{{total}} Гкал</strong>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="display: flex; justify-content: center; align-items: center; width: 100%; padding: 20px 0;">
+    <canvas id="heatLossChart" width="1000" height="600" ></canvas>
+</div>
+
+<script>
+    var ctx = document.getElementById('heatLossChart').getContext('2d');
+var chartData = JSON.parse('{{ chart_data|safe }}');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: chartData.labels,
+        datasets: [{
+            label: 'Гкал',
+            data: chartData.values,
+            backgroundColor: ['red', 'blue', 'green']
+        }]
+    },
+    options: {
+        responsive: false, // Отключаем автоматическое масштабирование
+        maintainAspectRatio: false, // Отключаем сохранение пропорций
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}
