@@ -18,7 +18,7 @@
 {% block mainmenu %}
 		<div class="header">
 			<ul id="mainmenu" class="mainmenu">
-			<li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
+			<li class="logo"><a href="{% url 'heat_power_home' %}"><div class="logo"></div></a></li>
 {% for m in menu %}
 	{% if not forloop.last %}<li>{% else %}<li class="last">{% endif %}
 		<a href="{% url m.url_name %}">{{m.title}}</a></li>
@@ -35,8 +35,8 @@
 	<td valign="top" class="left-chapters">
     <ul id="leftchapters" class="nav flex-column">
         <!-- Обычные ссылки -->
-        <li><a class="nav-link text-dark fw-bold" href="{% url 'result' %}">Результаты расчетов</a></li>
-        <li><a class="nav-link text-dark fw-bold" href="{% url 'heat_power' %}">Расчет тепловой мощности</a></li>
+        <li><a class="nav-link text-dark fw-bold" href="{% url 'heat_power_home' %}">Результаты расчетов</a></li>
+        <li><a class="nav-link text-dark fw-bold" href="{% url 'heat_power_home' %}">Расчет тепловой мощности</a></li>
 
         <!-- Расчет тепловых потерь (с вложенным списком) -->
         <li class="nav-item">
@@ -48,13 +48,11 @@
                     <li><a class="nav-link text-dark" href="{% url 'heat_losses' %}">Потери с утечкой и
                         заполнение трубопровода </a></li>
                     <li><a class="nav-link text-dark" href="{% url 'insulation_losses' %}">Потери через изоляцию</a></li>
-                    <li><a class="nav-link text-dark" href="{% url 'heat_losses' %}">Дополнительные потери</a></li>
+                    <li><a class="nav-link text-dark" href="{% url 'result_losses' %}">Общие нормы потерь</a></li>
                 </ul>
             </div>
         </li>
 		<li class="share">
-		<p>Наш канал</p>
-		<a class="share-yt" href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists" target="_blank" rel="nofollow"></a>
 		</li>
 	</ul>
 </td>

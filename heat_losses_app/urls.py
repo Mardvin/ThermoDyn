@@ -12,4 +12,5 @@ urlpatterns = [
     path('insulation_losses/add/', views.CreateInsulationLosses.as_view(), name='create_pipeline_insulation'),
     path('insulation_losses/edit/<int:pk>/', views.UpdateInsulationLosses.as_view(), name='edit_insulation'),
     path('insulation_losses/delete/<int:pk>/', views.DeleteInsulationLosses.as_view(), name='delete_insulation'),
+    path('insulation_losse/result/', views.ResultLosses.as_view(), name='result_losses'),
 ]

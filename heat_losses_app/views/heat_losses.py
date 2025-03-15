@@ -8,11 +8,11 @@ from heat_losses_app.models.models import PipelineSegment
 
 # Create your views here.
 
-menu = [
-    {'title': "О сайте", 'url_name': 'about'},
-    {'title': "Добавить статью", 'url_name': 'add_data_about_home'},
-    {'title': "Войти", 'url_name': 'login'},
-]
+# menu = [
+#     {'title': "О сайте", 'url_name': 'about'},
+#     {'title': "Добавить статью", 'url_name': 'add_data_about_home'},
+#     {'title': "Войти", 'url_name': 'login'},
+# ]
 
 
 class PipelineSegmentTable(ListView):
@@ -23,8 +23,7 @@ class PipelineSegmentTable(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
-        context['menu'] = menu
-        context['heat_insulation'] = main_heat_losses.network_volume.total_volume_network
+        context['network_volume'] = main_heat_losses.network_volume.total_volume_network
         context['network_leakage'] = main_heat_losses.network_leakage.leakage_loss
         context['segments'] = DataRepository.get_all_segments()
         context['temperature_graph'] = DataRepository.get_temperature_graph()

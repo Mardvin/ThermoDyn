@@ -7,11 +7,11 @@ from heat_losses_app.functions.heat_insulations.main_heat_insulations import mai
 from heat_losses_app.models.insulation_losses import HeatLossInsulation
 from heat_losses_app.models.models import LayingType
 
-menu = [
-    {'title': "О сайте", 'url_name': 'about'},
-    {'title': "Добавить статью", 'url_name': 'add_data_about_home'},
-    {'title': "Войти", 'url_name': 'login'},
-]
+# menu = [
+#     {'title': "О сайте", 'url_name': 'about'},
+#     {'title': "Добавить статью", 'url_name': 'add_data_about_home'},
+#     {'title': "Войти", 'url_name': 'login'},
+# ]
 
 
 class HeatLossByType:
@@ -28,7 +28,6 @@ class InsulationLossesView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Главная страница'
-        context['menu'] = menu
 
         # Получаем все виды прокладки
         context['laying_types'] = LayingType.choices
