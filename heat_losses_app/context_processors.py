@@ -5,6 +5,7 @@ def left_menu(request):
             {'title': 'Расчет тепловой мощности', 'url_name': 'heat_power_home'},
             {'title': 'Расчет тепловых потерь', 'url_name': 'heat_losses'},
             {'title': 'Расчет потерь через изоляцию', 'url_name': 'losses_insulation'},
+            {'title': 'Расчет затрат электроэнергии', 'url_name': 'electricity_costs'},
         ]
     }
 

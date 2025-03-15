@@ -33,7 +33,7 @@
                         <a href="{% url 'edit_home' home.id %}">Редактировать</a>
                         <a href="#"
                            class="delete-btn"
-                           data-home-id="{{ home.id }}"
+                           data-id="{{ home.id }}"
                            data-delete-url="{% url 'delete_home' home.id %}"
                            data-csrf-token="{{ csrf_token }}">
                             Удалить

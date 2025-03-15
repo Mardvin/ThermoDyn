@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h2>Характеристика электрооборудования котельной</h2>
+
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Тип насоса</th>
+            <th>Вид насоса</th>
+            <th>Мощность двигателя, кВт</th>
+            <th>Продолжительность работы, ч</th>
+            <th>Действия</th>  <!-- Новая колонка -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for pump in pumps %}
+        <tr>
+            <td>{{ pump.pump_type }}</td>
+            <td>{{ pump.get_pump_category_display }}</td>
+            <td>{{ pump.power_kW }}</td>
+            <td>{{ pump.operating_hours }}</td>
+            <td>
+                <div class="dropdown">
+                    <button class="dropbtn">⋮</button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'edit_electricity' pump.id %}">Редактировать</a>
+                        <a href="#"
+                           class="delete-btn"
+                           data-id="{{ pump.id }}"
+                           data-delete-url="{% url 'delete_electricity' pump.id %}"
+                           data-csrf-token="{{ csrf_token }}">
+                            Удалить
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+    <!-- Кнопка для перехода на страницу добавления -->
+<a href="{% url 'create_electricity' %}" class="btn btn-primary">Добавить</a>
+
+
+<script src="{% static 'thermo/js/dropdown.js' %}"></script>
+{% endblock %}
