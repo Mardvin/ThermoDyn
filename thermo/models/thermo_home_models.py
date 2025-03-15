@@ -3,15 +3,6 @@ from django.db import models
 from thermo.function.heat_power import calculate_heat_energy
 
 
-# Create your models here.
-
-# class Women(models.Model):
-#     title = models.CharField(max_length=255)
-#     content = models.TextField(blank=True)
-#     time_create = models.DateTimeField(auto_now_add=True)
-#     time_update = models.DateTimeField(auto_now=True)
-#     is_published = models.BooleanField(default=True)
-
 class Home(models.Model):
     street_name = models.CharField(max_length=255, verbose_name='Улица')
     numbers = models.IntegerField(verbose_name='Номер дома')

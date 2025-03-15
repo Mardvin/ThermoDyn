@@ -2,7 +2,8 @@ from django.core.exceptions import ValidationError
 from datetime import date
 
 from django import forms
-from .models import Home
+from .models import Home, BoilerRoomPump
+
 
 class AddHomeForm(forms.ModelForm):
 
@@ -14,11 +15,7 @@ class AddHomeForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
         }
 
-    # def clean_construction_year(self):
-    #     year = self.cleaned_data['year']
-    #     current_year = date.today().year
-    #
-    #     if year > current_year:
-    #         raise ValidationError(f"Год не может быть больше {current_year}")
-    #
-    #     return year
+class AddElectricityForm(forms.ModelForm):
+    class Meta:
+        fields = ['pump_type', 'pump_category', 'power_kW', 'operating_hours',]
+        model = BoilerRoomPump

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
         button.addEventListener("click", function (event) {
             event.preventDefault();
             if (confirm("Удалить?")) {
-                const postId = this.getAttribute("data-home-id");
+                const postId = this.getAttribute("data-id");
                 const deleteUrl = this.getAttribute("data-delete-url").replace("0", postId);
                 const csrfToken = this.getAttribute("data-csrf-token");
 
