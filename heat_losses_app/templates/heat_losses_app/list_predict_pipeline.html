@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h1>Участки трубопровода рекомендуемые на замену </h1>
+
+<table class="table table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Длина трубопровода (км)</th>
+            <th>Диаметр (мм)</th>
+            <th>Тип прокладки</th>
+            <th>Материал теплоизоляции</th>
+            <th>Год ввода в эксплуатацию</th>
+            <th>Годовые теплопотери (Гкал) (старый)</th>
+            <th>Новый материал теплоизоляции</th>
+            <th>Годовые теплопотери (Гкал) (новый)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pipeline in pipelines %}
+            <tr>
+                <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.length|floatformat:3 }}</td>
+                <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.diameter }}</td>
+                <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.laying_type }}</td>
+                <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.insulation_material }}</td>
+                <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.commissioning_year }}</td>
+                <td>{{ pipeline.pipeline_segment_loss.heat_loss_year|default:"-"|floatformat:2 }}</td>
+                <td>{{ pipeline.new_insulation_material }}</td>
+                <td>{{ pipeline.heat_loss_year|default:"-"|floatformat:2 }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8">Нет данных</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<button id="recalculate-btn" class="btn btn-primary">Запустить AI рекомендацию</button>
+<div id="status-message"></div>
+
+
+<script>
+document.getElementById("recalculate-btn").addEventListener("click", function () {
+    let button = this;
+    button.disabled = true; // Блокируем кнопку, чтобы избежать повторных кликов
+    let statusMessage = document.getElementById("status-message");
+
+    fetch("{% url 'update_predictions' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            statusMessage.innerHTML = "<div class='alert alert-success'>" + data.message + "</div>";
+            location.reload(); // Перезагружаем страницу после успешного расчета
+        } else {
+            statusMessage.innerHTML = "<div class='alert alert-danger'>" + data.message + "</div>";
+        }
+    })
+    .catch(error => {
+        statusMessage.innerHTML = "<div class='alert alert-danger'>Ошибка: " + error + "</div>";
+    })
+    .finally(() => {
+        button.disabled = false; // Разблокируем кнопку
+    });
+});
+</script>
+{% endblock %}
+

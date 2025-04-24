@@ -2,6 +2,7 @@ from django.db.models import QuerySet
 
 # from heat_losses_app.models import HeatLossInsulation
 from heat_losses_app.models.models import PipelineSegment, PipeStandard, TemperatureGraph
+from thermo.models import BoilerRoomPump
 
 
 class DataRepository:
@@ -23,6 +24,10 @@ class DataRepository:
     @staticmethod
     def get_temperature_graph() -> QuerySet:
         return TemperatureGraph.objects.all()
+
+    @staticmethod
+    def get_electricity_machine() -> QuerySet:
+        return BoilerRoomPump.objects.all()
 
     # @staticmethod
     # def get_insulation_losses() -> QuerySet:

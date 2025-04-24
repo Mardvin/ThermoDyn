@@ -1,6 +1,6 @@
 from django.db import models
 
-from thermo.function.heat_power import calculate_heat_energy
+from thermo.function.thermo_home.heat_power import calculate_heat_energy
 
 
 class Home(models.Model):
