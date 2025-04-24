@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from thermo.forms import AddHomeForm
-from thermo.function.heat_power import total_heat_energy
+from thermo.function.thermo_home.heat_power import total_heat_energy
 from thermo.models import Home
 
 

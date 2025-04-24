@@ -11,14 +11,10 @@ class HeatLossInsulation(models.Model):
 
     # Поле для коэфициента b, рассчитываемого на основе диаметра трубы
     b = models.FloatField(verbose_name="Коэффициент b")
-
     insulation_thickness_mm = models.FloatField(verbose_name="Толщина слоя теплоизоляционного материала (мм)")
-
-    # Удельные часовые теплопотери для температуры воды в подающем трубопроводе
     heat_loss_supply = models.FloatField(verbose_name="Удельные теплопотери (поддающий трубопровод) ккал/(м·ч)",)
-
-    # Удельные часовые теплопотери для температуры воды в обратном трубопроводе
     heat_loss_return = models.FloatField(verbose_name="Удельные теплопотери (обратный трубопровод) ккал/(м·ч)",)
+    heat_loss_year = models.FloatField(null=True, verbose_name="Годовые нормы тепловых потерь Гкал")
 
     # Метод для вычисления коэффициента b
     def calculate_b(self):
@@ -50,11 +46,19 @@ class HeatLossInsulation(models.Model):
             pipe_laying_type=self.pipeline_segment.laying_type
         )
 
+    def calculate_heat_loss_year(self):
+        self.heat_loss_year = round((
+                                      self.heat_loss_supply * self.b * self.pipeline_segment.length
+                                    ) + (
+                                    self.heat_loss_return * self.b * self.pipeline_segment.length
+        ) * 1e-6, 2)
+
 
     def save(self, *args, **kwargs):
         # Рассчитываем коэффициент b перед сохранением
         self.calculate_b()
         self.calculate_heat_losses()
+        self.calculate_heat_loss_year()
         super().save(*args, **kwargs)
 
     def __str__(self):

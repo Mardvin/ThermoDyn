@@ -1,7 +1,5 @@
-from django.db.models import QuerySet
-
 from config import load_config
-from heat_losses_app.functions.core.db import DataRepository
+from core.db import DataRepository
 from heat_losses_app.functions.heat_loss.heat_loss_leakage import NetworkLeakage
 from heat_losses_app.functions.heat_loss.network_volume import NetworkVolume
 from heat_losses_app.functions.heat_loss.temperature_analysis import TemperatureCalculator

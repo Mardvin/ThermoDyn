@@ -1,5 +1,5 @@
 from config import load_config
-from heat_losses_app.functions.core.db import DataRepository
+from core.db import DataRepository
 from heat_losses_app.functions.heat_insulations.insulation_losses import HeatLossCalculator
 
 
