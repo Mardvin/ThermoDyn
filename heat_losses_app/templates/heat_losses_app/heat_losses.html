@@ -53,6 +53,34 @@
 
 <div class="summary-block">
     <strong>Ёмкость трубопровода системы: {{ network_volume }} м3</strong>
+    <br>
+    <a class="btn btn-link mt-2" data-bs-toggle="collapse" href="#formulaCollapse1" role="button" aria-expanded="false" aria-controls="formulaCollapse">
+        Показать формулу расчёта
+    </a>
+        <div class="collapse" id="formulaCollapse1">
+            <div class="card card-body mt-2 text-start">
+            Формула:<br>
+            $$ V_0 = \sum_{i} V_{0.уд.i} \cdot 2L_{от.i} $$ <br>
+            где:
+            <div class="formula-block">
+            <div class="formula-line">
+                <div class="formula-variable">\( V_0 \)</div>
+                <div class="formula-dash">—</div>
+                <div class="formula-text">общий объем теплоносителя</div>
+            </div>
+            <div class="formula-line">
+                <div class="formula-variable">\( V_{0.уд.i} \)</div>
+                <div class="formula-dash">—</div>
+                <div class="formula-text">удельный объем на участке \( i \)</div>
+            </div>
+            <div class="formula-line">
+                <div class="formula-variable">\( L_{от.i} \)</div>
+                <div class="formula-dash">—</div>
+                <div class="formula-text">длина участка сети \( i \) (м)</div>
+            </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <h4>Продолжительность функционирования теплоснабжения в отопительный, летний период и в течение года:</h4>
@@ -65,7 +93,41 @@
 
 <div class="summary-block">
     <strong> {{ network_leakage }} м3</strong>
-</div>
+    <br>
+    <a class="btn btn-link mt-2" data-bs-toggle="collapse" href="#formulaCollapse2" role="button"
+       aria-expanded="false" aria-controls="formulaCollapse">
+        Показать формулу расчёта
+    </a>
+        <div class="collapse" id="formulaCollapse2">
+            <div class="card card-body mt-2 text-start">
+                Формула:<br>
+                $$ G_{ут.н} = \frac{a \times V_{ср.год} \times n_{г}}{100} $$ <br>
+                где:
+                <div class="formula-block">
+                    <div class="formula-line">
+                        <div class="formula-variable">\( G_{ут.н} \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">нормативная утечка теплоносителя</div>
+                    </div>
+                    <div class="formula-line">
+                        <div class="formula-variable">\( a \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">норма утечки (%), обычно 0,25%</div>
+                    </div>
+                    <div class="formula-line">
+                        <div class="formula-variable">\( V_{ср.год} \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">среднегодовой объем теплоносителя</div>
+                    </div>
+                    <div class="formula-line">
+                        <div class="formula-variable">\( n_{г} \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">число дней в году (365)</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
 
 <h4>Средняя температура в прямом и обратном трубопроводе</h4>
 
@@ -127,24 +189,112 @@
 
 <div class="summary-block">
     <strong>{{hourly_annual_coolant_leakage}} м3/ч</strong>
+    <br>
+    <a class="btn btn-link mt-2" data-bs-toggle="collapse" href="#formulaCollapse3" role="button"
+       aria-expanded="false" aria-controls="formulaCollapse">
+        Показать формулу расчёта
+    </a>
+        <div class="collapse" id="formulaCollapse3">
+            <div class="card card-body mt-2 text-start">
+                Формула:<br>
+                $$ G_{ут.н} = \frac{a \times V_{ср.год} \times n_{г}}{100} $$ <br>
+                где:
+                <div class="formula-block">
+                    <div class="formula-line">
+                        <div class="formula-variable">\( G_{ут.н} \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">нормативная утечка теплоносителя</div>
+                    </div>
+                    <div class="formula-line">
+                        <div class="formula-variable">\( a \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">норма утечки (%), обычно 0,25%</div>
+                    </div>
+                    <div class="formula-line">
+                        <div class="formula-variable">\( V_{ср.год} \)</div>
+                        <div class="formula-dash">—</div>
+                        <div class="formula-text">среднегодовой объем теплоносителя</div>
+                    </div>
+                </div>
+            </div>
+            </div>
 </div>
 
-<h4>Дополнительные параметры системы</h4>
-<div class="summary-block bg-light p-3 rounded shadow-sm">
-    <ul class="list-unstyled">
-        <li>Pгод плотность теплоносителя при среднем значении температуры: <strong>1000 кг/м3</strong></li>
-        <li>Температуры подпитки холодной воды: </li>
-        <li>В отопительный период: <strong>+5 °C</strong></li>
-        <li>В летнее время: <strong>+15 °C</strong></li>
-        <li>Удельная теплоемкость теплоносителя<strong>1 ккал/кг*°C</strong></li>
-        <li>Доля массового расхода теплоносителя<strong>0,75</strong></li>
-    </ul>
-</div>
+{#<h4>Дополнительные параметры системы</h4>#}
+{#<div class="summary-block bg-light p-3 rounded shadow-sm">#}
+{#    <ul class="list-unstyled">#}
+{#        <li>Pгод плотность теплоносителя при среднем значении температуры: <strong>1000 кг/м3</strong></li>#}
+{#        <li>Температуры подпитки холодной воды: </li>#}
+{#        <li>В отопительный период: <strong>+5 °C</strong></li>#}
+{#        <li>В летнее время: <strong>+15 °C</strong></li>#}
+{#        <li>Удельная теплоемкость теплоносителя<strong>1 ккал/кг*°C</strong></li>#}
+{#        <li>Доля массового расхода теплоносителя<strong>0,75</strong></li>#}
+{#    </ul>#}
+{#</div>#}
 
 <h4>Расчет нормативного значения годовых технологических тепловых потерь с утечкой:</h4>
 
 <div class="summary-block">
     <strong>{{calculate_utilized_heat}} Гкал</strong>
+    <br>
+    <a class="btn btn-link mt-2" data-bs-toggle="collapse" href="#formulaCollapse4" role="button"
+       aria-expanded="false" aria-controls="formulaCollapse">
+        Показать формулу расчёта
+    </a>
+     <div class="collapse" id="formulaCollapse4">
+        <div class="card card-body mt-2 text-start">
+    Формула:<br>
+    $$ Q_{у.н.} = m_{у.год.н.} \times \rho_{год} \times c \cdot \left( b \cdot t_{1год} + (1 - b) \cdot t_{2год} - t_{х.год} \right) \cdot n_{г} \cdot 10^{-6} \quad \text{Гкал} $$ <br>
+    где:
+    <div class="formula-block">
+        <div class="formula-line">
+            <div class="formula-variable">\( Q_{у.н.} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">годовые теплопотери от утечки (Гкал)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( m_{у.год.н.} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">масса утечки теплоносителя за год (м³)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( \rho_{год} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">плотность теплоносителя (1000 кг/м³)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( c \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">удельная теплоемкость (1 ккал/кг·°C)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( b \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">доля потерь в подающем трубопроводе (0.75)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( t_{1год} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">температура подачи (°C)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( t_{2год} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">температура обратки (°C)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( t_{х.год} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">температура подпиточной воды (°C)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( n_{г} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">продолжительность работы системы (ч)</div>
+        </div>
+    </div>
+    </div>
+         </div>
 </div>
 
 
@@ -152,7 +302,52 @@
 
 <div class="summary-block">
     <strong>{{cost_filling_heat}} Гкал</strong>
-</div>
+    <br>
+    <a class="btn btn-link mt-2" data-bs-toggle="collapse" href="#formulaCollapse5" role="button"
+       aria-expanded="false" aria-controls="formulaCollapse">
+        Показать формулу расчёта
+    </a>
+     <div class="collapse" id="formulaCollapse5">
+        <div class="card card-body mt-2 text-start">
+    Формула:<br>
+    $$ Q_{зап} = 1.5 \times V_{тр} \times c \times \rho_{год} \times (t_{зап} - t_{х}) \times 10^{-6} \quad \text{Гкал} $$ <br>
+    где:
+    <div class="formula-block">
+        <div class="formula-line">
+            <div class="formula-variable">\( Q_{зап} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">тепловые затраты на заполнение (Гкал)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( V_{тр} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">объем сетевой воды для заполнения (м³)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( c \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">удельная теплоемкость (1 ккал/кг·°C)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( \rho_{год} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">плотность теплоносителя (1000 кг/м³)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( t_{зап} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">температура воды при заполнении (+40°C)</div>
+        </div>
+        <div class="formula-line">
+            <div class="formula-variable">\( t_{х} \)</div>
+            <div class="formula-dash">—</div>
+            <div class="formula-text">температура холодной воды (+5°C)</div>
+        </div>
+    </div>
+    </div>
+    </div>
+ </div>
+
 
 <script src="{% static 'heat_losses/js/dropdown.js' %}"></script>
 

@@ -12,9 +12,19 @@ class PredictPipeline(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['pipelines'] = PredictPipline.objects.filter(replacement="Да").select_related(
-            'pipeline_segment_loss__pipeline_segment')
+        context['pipelines'] = PredictPipline.objects.filter(replacement="Да").select_related('pipeline_segment_loss__pipeline_segment')
         return context
+
+def get_segment_data(request, segment_id):
+    segment = PredictPipline.objects.select_related('pipeline_segment_loss').get(id=segment_id)
+    old_loss = segment.pipeline_segment_loss.heat_loss_year or 0
+    new_loss = segment.heat_loss_year or 0
+    data = {
+        'old_loss': float(old_loss),
+        'new_loss': float(new_loss),
+    }
+    return JsonResponse(data)
+
 
 @csrf_exempt
 def update_predictions(request):

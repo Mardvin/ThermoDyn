@@ -37,8 +37,70 @@
     </tbody>
 </table>
 
-<button id="recalculate-btn" class="btn btn-primary">Запустить AI рекомендацию</button>
-<div id="status-message"></div>
+<div class="d-flex align-items-center mb-3">
+    <button id="recalculate-btn" class="btn btn-primary me-3">Запустить AI рекомендацию</button>
+
+    <select id="segmentSelect" class="form-select" style="width: 300px !important;">
+      {% for item in pipelines %}
+        <option value="{{ item.id }}">Участок {{ item.pipeline_segment_loss.pipeline_segment.diameter }} мм, {{ item.pipeline_segment_loss.pipeline_segment.length }} м, {{ item.pipeline_segment_loss.pipeline_segment.commissioning_year }} г.</option>
+      {% endfor %}
+    </select>
+</div>
+
+<div style="width: 1200px; height: 600px; margin: 0 auto;">
+    <canvas id="lossChart"></canvas>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let chartInstance; // глобальная переменная для хранения графика
+
+// Функция для загрузки и отрисовки графика
+function loadChart(segmentId) {
+    fetch(`/get_segment_data/${segmentId}/`)
+      .then(response => response.json())
+      .then(data => {
+        const ctx = document.getElementById('lossChart').getContext('2d');
+
+        // Удалить предыдущий график, если он есть
+        if (chartInstance) {
+          chartInstance.destroy();
+        }
+
+        // Создание нового графика
+        chartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['До реконструкции', 'После реконструкции'],
+            datasets: [{
+              label: 'Годовые теплопотери (Гкал)',
+              data: [data.old_loss, data.new_loss],
+              backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+              borderColor: ['rgba(255,99,132,1)', 'rgba(54, 162, 235, 1)'],
+              borderWidth: 1
+            }]
+          },
+          options: { scales: { y: { beginAtZero: true } } }
+        });
+      });
+}
+
+// Автозагрузка для первого участка
+window.addEventListener('load', function() {
+    const select = document.getElementById('segmentSelect');
+    if (select.value) {
+        loadChart(select.value);
+    }
+});
+
+// Обновление графика при выборе другого участка
+document.getElementById('segmentSelect').addEventListener('change', function() {
+    if (this.value) {
+        loadChart(this.value);
+    }
+});
+</script>
 
 
 <script>

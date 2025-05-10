@@ -1,0 +1,21 @@
+.formula-block {
+    margin-top: 5px;
+}
+
+.formula-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.formula-variable {
+    width: 40px;
+}
+
+.formula-dash {
+    margin: 0 8px;
+}
+
+.formula-text {
+    flex: 1;
+}

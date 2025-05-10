@@ -52,7 +52,78 @@
 
 <div class="summary-block">
     <strong>Суммарное количество теплоты: {{ total_heat_energy }} Гкал</strong>
+    <br>
+    <a class="btn btn-link mt-2" data-bs-toggle="collapse" href="#formulaCollapse" role="button" aria-expanded="false" aria-controls="formulaCollapse">
+        Показать формулу расчёта
+    </a>
+    <div class="collapse" id="formulaCollapse">
+        <div class="card card-body mt-2 text-start">
+            Формула:<br>
+            $$ Q_o = \alpha \times q_o \times V_n \times (t_i - t_m) \times k_{пт} \times \tau \times Z_0 \times 10^{-6} $$ <br>
+            где:
+            <div class="formula-block">
+                <div class="formula-line">
+                    <div class="formula-variable">\( Q_o \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">количество теплоты (Гкал)</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( \alpha \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">поправка на район строительства</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( q_o \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">удельная характеристика здания</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( V_n \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">объем здания (м³)</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( t_i \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">внутренняя температура (°C)</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( t_m \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">наружная температура (°C)</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( k_{пт} \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">коэффициент потерь труб</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( \tau \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">часов в сутки</div>
+                </div>
+                <div class="formula-line">
+                    <div class="formula-variable">\( Z_0 \)</div>
+                    <div class="formula-dash">—</div>
+                    <div class="formula-text">дней отопительного периода</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var formulaCollapse = document.getElementById('formulaCollapse');
+    formulaCollapse.addEventListener('shown.bs.collapse', function () {
+        setTimeout(function () {
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }, 300); // задержка на анимацию
+    });
+});
+</script>
 
 <script src="{% static 'thermo/js/dropdown.js' %}"></script>
 {% endblock %}
