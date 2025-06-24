@@ -12,8 +12,8 @@ def left_menu(request):
 def up_menu(request):
     return {
         'menu': [
-            {'title': "О сайте", 'url_name': 'heat_power_home'},
-            {'title': "Константы", 'url_name': 'heat_power_home'},
-            {'title': "Войти", 'url_name': 'heat_power_home'},
+            {'title': "О сайте", 'url_name': 'about_project'},
+            {'title': "Константы", 'url_name': 'constants'},
+            {'title': "...", 'url_name': 'heat_power_home'},
         ]
     }

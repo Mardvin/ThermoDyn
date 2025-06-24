@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 
@@ -26,11 +27,20 @@ def get_segment_data(request, segment_id):
     return JsonResponse(data)
 
 
+from django.shortcuts import redirect
+
 @csrf_exempt
 def update_predictions(request):
     if request.method == "POST":
         try:
             PredictPipline.objects.update_or_create_for_all_heat_loss_insulations()
-            return JsonResponse({"status": "success", "message": "Перерасчет выполнен"})
         except Exception as e:
-            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+            # можно обработать через сообщения Django, но пока просто переадресуем
+            pass
+    return redirect('predict_pipeline')  # имя url для ListView страницы
+
+
+def updated_pipeline_table(request):
+    pipelines = PredictPipline.objects.filter(replacement="Да").select_related('pipeline_segment_loss__pipeline_segment')
+    html = render_to_string("heat_losses_app/pipeline_table_rows.html", {'pipelines': pipelines})
+    return JsonResponse({'html': html})
