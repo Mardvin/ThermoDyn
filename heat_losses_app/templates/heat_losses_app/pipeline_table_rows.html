@@ -1,0 +1,14 @@
+{% for pipeline in pipelines %}
+<tr>
+    <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.length|floatformat:3 }}</td>
+    <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.diameter }}</td>
+    <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.laying_type }}</td>
+    <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.insulation_material }}</td>
+    <td>{{ pipeline.pipeline_segment_loss.pipeline_segment.commissioning_year }}</td>
+    <td>{{ pipeline.pipeline_segment_loss.heat_loss_year|default:"-"|floatformat:2 }}</td>
+    <td>{{ pipeline.new_insulation_material }}</td>
+    <td>{{ pipeline.heat_loss_year|default:"-"|floatformat:2 }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="8">Нет данных</td></tr>
+{% endfor %}

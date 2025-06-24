@@ -29,3 +29,4 @@ class AddPipelineInsulationForm(forms.ModelForm):
     class Meta:
         model = HeatLossInsulation
         fields = ['pipeline_segment', 'insulation_thickness_mm']
+
